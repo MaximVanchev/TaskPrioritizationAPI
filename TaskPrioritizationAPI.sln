@@ -5,6 +5,10 @@ VisualStudioVersion = 17.12.35521.163 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskPrioritizationAPI", "TaskPrioritizationAPI\TaskPrioritizationAPI.csproj", "{330051E9-34A2-43FE-8D09-91B10155B8EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskPrioritizationAPI.Infrastructure", "TaskPrioritizationAPI.Infrastructure\TaskPrioritizationAPI.Infrastructure.csproj", "{8D8BFEB7-2980-4312-9050-0534E5BCA99B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskPrioritizationAPI.Core", "TaskPrioritizationAPI.Core\TaskPrioritizationAPI.Core.csproj", "{E9F7D19E-EA9E-42AA-BE48-AC5610AF3040}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{330051E9-34A2-43FE-8D09-91B10155B8EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{330051E9-34A2-43FE-8D09-91B10155B8EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{330051E9-34A2-43FE-8D09-91B10155B8EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D8BFEB7-2980-4312-9050-0534E5BCA99B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D8BFEB7-2980-4312-9050-0534E5BCA99B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D8BFEB7-2980-4312-9050-0534E5BCA99B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D8BFEB7-2980-4312-9050-0534E5BCA99B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9F7D19E-EA9E-42AA-BE48-AC5610AF3040}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9F7D19E-EA9E-42AA-BE48-AC5610AF3040}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9F7D19E-EA9E-42AA-BE48-AC5610AF3040}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9F7D19E-EA9E-42AA-BE48-AC5610AF3040}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
