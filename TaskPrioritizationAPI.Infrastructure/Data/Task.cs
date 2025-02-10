@@ -24,8 +24,10 @@ namespace TaskPrioritizationAPI.Infrastructure.Data
         public PriorityLevel Priority { get; set; } = PriorityLevel.Medium;
 
         [Required]
-        public DateTime? DueDate { get; set; }
+        public string DueDate { get; set; }
 
         public bool IsCompleted { get; set; } = false;
+
+        public bool IsCritical { get; set; } = false;
     }
 }
