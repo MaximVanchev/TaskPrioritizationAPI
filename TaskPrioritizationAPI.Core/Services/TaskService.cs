@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic;
+﻿using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +52,7 @@ namespace TaskPrioritizationAPI.Core.Services
         {
             var tasks = repo.All<Infrastructure.Data.Task>().Select(t => new TaskViewModel()
             {
+                Id = t.Id,
                 Title = t.Title,
                 Description = t.Description,
                 Priority = t.Priority,
@@ -157,12 +159,23 @@ namespace TaskPrioritizationAPI.Core.Services
                 return false;
             }
 
-            task.Id = taskViewModel.Id;
-            task.Description = taskViewModel.Description;
-            task.Priority = PriorityCalculator(taskViewModel.DueDate, taskViewModel.IsCritical, taskViewModel.IsCompleted);
-            task.DueDate = taskViewModel.DueDate;
+            if(!string.IsNullOrEmpty(taskViewModel.Description))
+            {
+                task.Description = taskViewModel.Description;
+            }
+            if (!string.IsNullOrEmpty(taskViewModel.Title))
+            {
+                task.Title = taskViewModel.Title;
+            }
+            if (!string.IsNullOrEmpty(taskViewModel.DueDate))
+            {
+                task.DueDate = taskViewModel.DueDate;
+            }
+
             task.IsCritical = taskViewModel.IsCritical;
             task.IsCompleted = taskViewModel.IsCompleted;
+            
+            task.Priority = PriorityCalculator(task.DueDate, task.IsCritical, task.IsCompleted);
 
             repo.Update(task);
             await repo.SaveChangesAsync();
