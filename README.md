@@ -20,6 +20,11 @@ A comprehensive API designed to manage tasks with features like adding, removing
 - .NET Core SDK (>= 6.0)
 - SQL Server (MSSQL) or access to a Cloud Docker MSSQL Container
 
+### Future Improvements
+- Add user authentication and authorization
+- Implement task categorization and labels
+- Introduce a priority calculation algorithm with more sophisticated rules
+
 ### Installation
 
 1. Clone the repository:
