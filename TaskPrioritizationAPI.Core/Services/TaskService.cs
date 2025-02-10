@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TaskPrioritizationAPI.Core.Constants;
 using TaskPrioritizationAPI.Core.Contracts;
 using TaskPrioritizationAPI.Core.Models;
+using TaskPrioritizationAPI.Infrastructure.Data;
 using TaskPrioritizationAPI.Infrastructure.Data.Common;
 using TaskPrioritizationAPI.Infrastructure.Data.Repositories;
 
@@ -23,7 +24,7 @@ namespace TaskPrioritizationAPI.Core.Services
 
         public async Task<TaskViewModel> AddTask(TaskAddViewModel taskAddModel)
         {
-            var task = new TaskViewModel()
+            var task = new Infrastructure.Data.Task()
             {
                 Title = taskAddModel.Title,
                 Description = taskAddModel.Description,
@@ -34,7 +35,16 @@ namespace TaskPrioritizationAPI.Core.Services
             
             await repo.AddAsync(task);
             await repo.SaveChangesAsync();
-            return task;
+
+            var taskViewModel = new TaskViewModel()
+            {
+                Title = taskAddModel.Title,
+                Description = taskAddModel.Description,
+                Priority = PriorityCalculator(taskAddModel.DueDate, taskAddModel.IsCritical, false),
+                DueDate = taskAddModel.DueDate,
+                IsCritical = taskAddModel.IsCritical
+            };
+            return taskViewModel;
         }
 
         public async Task<IEnumerable<TaskViewModel>> GetAllTasks()
