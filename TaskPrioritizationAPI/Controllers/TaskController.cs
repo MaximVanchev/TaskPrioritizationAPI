@@ -6,6 +6,8 @@ using TaskPrioritizationAPI.Infrastructure.Data.Common;
 
 namespace TaskPrioritizationAPI.Controllers
 {
+    [Route("[controller]s")]  // Removes the /api prefix and sets it as /tasks
+    [ApiController]
     public class TaskController : ControllerBase
     {
         private readonly ITaskService taskService;
@@ -36,7 +38,7 @@ namespace TaskPrioritizationAPI.Controllers
             return Ok(await taskService.AddTask(task));
         }
 
-            [HttpGet]
+        [HttpGet]
         public async Task<IActionResult> GetTasks([FromQuery] string? sort, [FromQuery] string? filter, [FromQuery] string? value)
         {
             var tasks = await taskService.GetAllTasks(); // Retrieve tasks from DB
@@ -81,8 +83,10 @@ namespace TaskPrioritizationAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTask(Guid id, [FromBody] TaskViewModel updatedTask)
-        { 
+        public async Task<IActionResult> UpdateTask([FromRoute] Guid id, [FromBody] TaskViewModel updatedTask)
+        {
+
+            updatedTask.Id = id;
 
             if (await taskService.UpgateTask(updatedTask) == false)
             {
@@ -93,7 +97,7 @@ namespace TaskPrioritizationAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTask(Guid id)
+        public async Task<IActionResult> DeleteTask([FromRoute] Guid id)
         {
 
             if (await taskService.RemoveTaskById(id) == false)
