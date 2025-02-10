@@ -10,18 +10,22 @@ namespace TaskPrioritizationAPI.Core.Contracts
 {
     public interface ITaskService
     {
-        Task<IEnumerable<TaskViewModel>> GetAllTasksByPriority();
+        Task<IEnumerable<TaskViewModel>> OrderTasksByPriority(IEnumerable<TaskViewModel> tasks);
 
-        Task<IEnumerable<TaskViewModel>> GetAllUncompleatedTasks();
+        Task<IEnumerable<TaskViewModel>> OrderTasksByDueDate(IEnumerable<TaskViewModel> tasks);
+
+        Task<IEnumerable<TaskViewModel>> GetAllTasks();
+
+        Task<IEnumerable<TaskViewModel>> FilterTasksByCompleated(IEnumerable<TaskViewModel> tasks, bool isCompleated);
 
         Task<TaskViewModel> AddTask(TaskAddViewModel taskAddModel);
 
-        Task<bool> RemoveTask(Guid taskId);
+        Task<bool> RemoveTaskById(Guid taskId);
 
         Task<TaskViewModel> GetTaskById(Guid taskId);
 
         Task<bool> UpgateTask(TaskViewModel taskViewModel);
 
-        Task<PriorityLevel> PriorityCalculator(string dueDate , bool isCritical, bool isCompleated);
+        PriorityLevel PriorityCalculator(string dueDate , bool isCritical, bool isCompleated);
     }
 }

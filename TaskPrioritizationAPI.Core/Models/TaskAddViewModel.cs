@@ -16,8 +16,6 @@ namespace TaskPrioritizationAPI.Core.Models
 
         public string DueDate { get; set; }
 
-        public bool IsCompleted { get; set; }
-
         public bool IsCritical { get; set; }
     }
 }

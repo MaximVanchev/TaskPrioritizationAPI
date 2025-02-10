@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using TaskPrioritizationAPI.Core.Constants;
 using TaskPrioritizationAPI.Core.Contracts;
 using TaskPrioritizationAPI.Core.Models;
-using TaskPrioritizationAPI.Infrastructure.Data;
 using TaskPrioritizationAPI.Infrastructure.Data.Common;
 using TaskPrioritizationAPI.Infrastructure.Data.Repositories;
 
@@ -28,42 +27,65 @@ namespace TaskPrioritizationAPI.Core.Services
             {
                 Title = taskAddModel.Title,
                 Description = taskAddModel.Description,
-                Priority = await PriorityCalculator(taskAddModel.DueDate, taskAddModel.IsCritical, taskAddModel.IsCompleted),
+                Priority = PriorityCalculator(taskAddModel.DueDate, taskAddModel.IsCritical, false),
                 DueDate = taskAddModel.DueDate,
-                IsCritical = taskAddModel.IsCritical,
-                IsCompleted = taskAddModel.IsCompleted
+                IsCritical = taskAddModel.IsCritical
             };
             
             await repo.AddAsync(task);
             await repo.SaveChangesAsync();
-
             return task;
         }
 
-        public async Task<IEnumerable<TaskViewModel>> GetAllTasksByPriority()
+        public async Task<IEnumerable<TaskViewModel>> GetAllTasks()
         {
             var tasks = repo.All<Infrastructure.Data.Task>().Select(t => new TaskViewModel()
-            { 
+            {
                 Title = t.Title,
                 Description = t.Description,
                 Priority = t.Priority,
                 DueDate = t.DueDate,
-                IsCompleted= t.IsCompleted,
-                IsCritical= t.IsCritical
+                IsCompleted = t.IsCompleted,
+                IsCritical = t.IsCritical
             });
 
             foreach (var task in tasks)
             {
-                task.Priority = await PriorityCalculator(task.DueDate, task.IsCritical, task.IsCompleted);
+                task.Priority = PriorityCalculator(task.DueDate, task.IsCritical, task.IsCompleted);
+            }
+
+            return tasks;
+
+        }
+
+        public async Task<IEnumerable<TaskViewModel>> OrderTasksByPriority(IEnumerable<TaskViewModel> tasks)
+        {
+
+            foreach (var task in tasks)
+            {
+                task.Priority = PriorityCalculator(task.DueDate, task.IsCritical, task.IsCompleted);
             }
 
             return tasks.OrderByDescending(t => t.Priority);
 
         }
 
-        public async Task<IEnumerable<TaskViewModel>> GetAllUncompleatedTasks()
+        public async Task<IEnumerable<TaskViewModel>> OrderTasksByDueDate(IEnumerable<TaskViewModel> tasks)
         {
-            return GetAllTasksByPriority().Result.Where(t => t.IsCompleted == true);
+
+            foreach (var task in tasks)
+            {
+                task.Priority = PriorityCalculator(task.DueDate, task.IsCritical, task.IsCompleted);
+            }
+
+            return tasks.OrderByDescending((t) => ConvertToDateTime(t.DueDate));
+
+        }
+
+        private static DateTime ConvertToDateTime(string dateString)
+        {
+            DateTime.TryParse(dateString, out DateTime parsedDate);
+            return parsedDate;
         }
 
         public async Task<TaskViewModel> GetTaskById(Guid taskId)
@@ -74,7 +96,7 @@ namespace TaskPrioritizationAPI.Core.Services
             {
                 Id = taskId,
                 Description = task.Description,
-                Priority = await PriorityCalculator(task.DueDate, task.IsCritical, task.IsCompleted),
+                Priority = PriorityCalculator(task.DueDate, task.IsCritical, task.IsCompleted),
                 DueDate = task.DueDate,
                 IsCritical = task.IsCritical,
                 IsCompleted = task.IsCompleted
@@ -83,7 +105,7 @@ namespace TaskPrioritizationAPI.Core.Services
             return taskViewModel;
         }
 
-        public async Task<PriorityLevel> PriorityCalculator(string dueDate, bool isCritical , bool isCompleated)
+        public PriorityLevel PriorityCalculator(string dueDate, bool isCritical , bool isCompleated)
         {
             DateTime.TryParse(dueDate, out DateTime parsedDate);
             DateTime now = DateTime.UtcNow; // UtcNow to avoid timezone issues
@@ -103,7 +125,7 @@ namespace TaskPrioritizationAPI.Core.Services
             }
         }
 
-        public async Task<bool> RemoveTask(Guid taskId)
+        public async Task<bool> RemoveTaskById(Guid taskId)
         {
             if (await repo.GetByIdAsync<Infrastructure.Data.Task>(taskId) == null)
             {
@@ -127,7 +149,7 @@ namespace TaskPrioritizationAPI.Core.Services
 
             task.Id = taskViewModel.Id;
             task.Description = taskViewModel.Description;
-            task.Priority = await PriorityCalculator(taskViewModel.DueDate, taskViewModel.IsCritical, taskViewModel.IsCompleted);
+            task.Priority = PriorityCalculator(taskViewModel.DueDate, taskViewModel.IsCritical, taskViewModel.IsCompleted);
             task.DueDate = taskViewModel.DueDate;
             task.IsCritical = taskViewModel.IsCritical;
             task.IsCompleted = taskViewModel.IsCompleted;
@@ -136,6 +158,11 @@ namespace TaskPrioritizationAPI.Core.Services
             await repo.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<IEnumerable<TaskViewModel>> FilterTasksByCompleated(IEnumerable<TaskViewModel> tasks, bool isCompleated)
+        {
+            return tasks.Where(task => task.IsCompleted == isCompleated);
         }
     }
 }
